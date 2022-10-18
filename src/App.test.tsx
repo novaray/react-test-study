@@ -1,14 +1,53 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import App from "./App";
+import React from 'react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import App from './App';
 
-test("renders learn react link", () => {
-  // render 함수는 DOM에 컴포넌트를 렌더링하는 함수이다. 인자로 렌더링할 react 컴포넌트가 들어간다.
-  const { getByText } = render(<App />);
-  // 위와 같이 쿼리함수와 각 유틸리티 함수를 담고있는 객체를 리턴하지만, 추천되지않는 방법이다.
-  // 소스코드가 복잡해지기 때문이다. 처음 만들어진 것처럼 screen 객체 사용을 권장한다.
+test('the counter starts at 0', () => {
+  render(<App/>);
+  // screen object를 이용해서 원하는 엘레멘트에 접근(접근할 때 Id로).
+  const counterElement = screen.getByTestId('counter');
+  // id가 counter인 element의 텍스트가 0인지 테스트
+  expect(counterElement).toHaveTextContent('0');
+});
+
+test('minus button has correct text', () => {
   render(<App />);
+  const minusButtonElement = screen.getByTestId('minus-button');
+  expect(minusButtonElement).toHaveTextContent('-');
+});
 
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('plus button has correct text', () => {
+  render(<App />);
+  const plusButtonElement = screen.getByTestId('plus-button');
+  expect(plusButtonElement).toHaveTextContent('+');
+});
+
+test('when the + button is pressed, the counter changes to 1', () => {
+  render(<App />);
+  const buttonElement = screen.getByTestId('plus-button');
+  fireEvent.click(buttonElement);
+  const counterElement = screen.getByTestId('counter');
+  expect(counterElement).toHaveTextContent('1');
+});
+
+test('when the - button is pressed, the counter changes to -1', () => {
+  render(<App />);
+  const buttonElement = screen.getByTestId('minus-button');
+  fireEvent.click(buttonElement);
+  const counterElement = screen.getByTestId('counter');
+  expect(counterElement).toHaveTextContent('-1');
+});
+
+test('on/off button has blue color', () => {
+  render(<App />);
+  const buttonElement = screen.getByTestId('on/off-button');
+  expect(buttonElement).toHaveStyle({backgroundColor: 'blue'});
+});
+
+test('Prevent the -,+ button from being pressed when the of/off button is clicked', () => {
+  render(<App />);
+  const onOffButtonElement = screen.getByTestId('on/off-button');
+  fireEvent.click(onOffButtonElement);
+  const plusButtonElement = screen.getByTestId('plus-button');
+  expect(plusButtonElement).toBeDisabled();
 });
